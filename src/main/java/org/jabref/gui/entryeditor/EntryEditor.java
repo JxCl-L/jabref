@@ -194,16 +194,48 @@ public class EntryEditor extends BorderPane {
         });
     }
 
+//    private void setTextFieldTraversable() {
+//        for (Node node : tabbed.getChildrenUnmodifiable()) {
+//            if (node instanceof TextField) {
+//                node.setFocusTraversable(false);
+//            }
+//        }
+//    }
+//
+//    public void setTraversal1() {
+//        if (getParent() != null) {
+//            Parent parent = getParent();
+//            for (Node child : parent.getChildrenUnmodifiable()) {
+//                child.setFocusTraversable(false);
+//            }
+//        }
+//    }
+//
+//    public void setTraversal(){
+//        Parent parent = libraryTab.getMainTable();
+//        for (Node child : parent.getChildrenUnmodifiable()) {
+//            child.setFocusTraversable(false);
+//        }
+
+//    }
+
     /**
      * Set up key bindings specific for the entry editor.
      */
     private void setupKeyBindings() {
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             Optional<KeyBinding> keyBinding = keyBindingRepository.mapToKeyBinding(event);
+
+            String keyText = event.getText();
+            if ("\t".equals(keyText)){
+                tabbed.getSelectionModel().selectNext();
+                event.consume();
+          }
+
             if (keyBinding.isPresent()) {
                 switch (keyBinding.get()) {
-                    case ENTRY_EDITOR_NEXT_PANEL:
-                    case ENTRY_EDITOR_NEXT_PANEL_2:
+                  case ENTRY_EDITOR_NEXT_PANEL:
+                  case ENTRY_EDITOR_NEXT_PANEL_2:
                         tabbed.getSelectionModel().selectNext();
                         event.consume();
                         break;
@@ -239,6 +271,32 @@ public class EntryEditor extends BorderPane {
             }
         });
     }
+
+//    public boolean checkLastTextField() {
+//        // Get the currently selected tab
+//        FieldsEditorTab currentTab = (FieldsEditorTab) tabbed.getSelectionModel().getSelectedItem();
+//
+//        // Get the list of fields in the current tab (assuming these are TextFields or TextAreas)
+//        Collection<Field> shownFields = currentTab.getShownFields();
+//
+//        // Find the currently focused field
+//        Node focusedNode = getScene().getFocusOwner();
+//
+//        // Iterate over the shown fields and check if the focused node is the last one
+//        if (focusedNode != null) {
+//            Field lastField = null;
+//            for (Field field : shownFields) {
+//                lastField = field; // Track the last field in the iteration
+//            }
+//
+//            // Check if the focusedNode is the last visible field
+//            if (lastField != null && lastField.equals(focusedNode)) {
+//                return true; // The focused node is the last field
+//            }
+//        }
+//
+//        return false; // The focused node is not the last field or no field is focused
+//    }
 
     @FXML
     public void close() {
