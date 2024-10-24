@@ -216,6 +216,7 @@ public class EntryEditor extends BorderPane {
 //        for (Node child : parent.getChildrenUnmodifiable()) {
 //            child.setFocusTraversable(false);
 //        }
+
 //    }
 
     /**
