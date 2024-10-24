@@ -279,6 +279,9 @@ public class GlobalSearchBar extends HBox {
 
         filterModeButton.setSelected(searchPreferences.getSearchDisplayMode() == SearchDisplayMode.FILTER);
         filterModeButton.setTooltip(new Tooltip(Localization.lang("Filter search results")));
+        //NOAH
+        filterModeButton.setFocusTraversable(false);
+
         initSearchModifierButton(filterModeButton);
         filterModeButton.setOnAction(event -> {
             searchPreferences.setSearchDisplayMode(filterModeButton.isSelected() ? SearchDisplayMode.FILTER : SearchDisplayMode.FLOAT);
@@ -287,6 +290,10 @@ public class GlobalSearchBar extends HBox {
 
         openGlobalSearchButton.disableProperty().bind(globalSearchActive.or(needsDatabase(stateManager).not()));
         openGlobalSearchButton.setTooltip(new Tooltip(Localization.lang("Search across libraries in a new window")));
+
+        //NOAH
+        openGlobalSearchButton.setFocusTraversable(false);
+
         initSearchModifierButton(openGlobalSearchButton);
         openGlobalSearchButton.setOnAction(evt -> openGlobalSearchDialog());
 

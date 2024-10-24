@@ -18,6 +18,8 @@ public class SearchTextField {
         textField.setPromptText(Localization.lang("Search..."));
         textField.setId("searchField");
         textField.getStyleClass().add("search-field");
+        //NOAH
+        textField.setFocusTraversable(false);
 
         Node graphicNode = IconTheme.JabRefIcons.SEARCH.getGraphicNode();
         graphicNode.getStyleClass().add("search-field-icon");
