@@ -48,6 +48,7 @@ import org.jabref.gui.dialogs.AutosaveUiManager;
 import org.jabref.gui.entryeditor.EntryEditor;
 import org.jabref.gui.exporter.SaveDatabaseAction;
 import org.jabref.gui.externalfiles.ImportHandler;
+import org.jabref.gui.fieldeditors.EditorTextField;
 import org.jabref.gui.fieldeditors.LinkedFileViewModel;
 import org.jabref.gui.importer.actions.OpenDatabaseAction;
 import org.jabref.gui.linkedfile.DeleteFileAction;
@@ -133,6 +134,8 @@ public class LibraryTab extends Tab {
     private MainTableDataModel tableModel;
     private FileAnnotationCache annotationCache;
     private EntryEditor entryEditor;
+
+    private EditorTextField editorTextField;
     private MainTable mainTable;
     private PanelMode mode = PanelMode.MAIN_TABLE;
     private SplitPane splitPane;
@@ -483,6 +486,8 @@ public class LibraryTab extends Tab {
         Platform.runLater(() -> {
             // Focus field and entry in main table (async to give entry editor time to load)
             entryEditor.setFocusToField(field);
+            editorTextField.setCurrentField(field);
+
             clearAndSelect(entry);
         });
     }

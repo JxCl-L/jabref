@@ -62,6 +62,8 @@ public class EditorTextArea extends TextArea implements Initializable, ContextMe
         this.pasteActionHandler = handler;
     }
 
+
+
     /**
      * Override javafx TextArea method applying TextArea.paste() and pasteActionHandler after
      */

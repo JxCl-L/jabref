@@ -3,9 +3,11 @@ package org.jabref.model.entry.field;
 import java.util.EnumSet;
 import java.util.Optional;
 
+import javafx.scene.control.TextField;
 import org.jabref.model.strings.StringUtil;
 
 public interface Field {
+
 
     /**
      * properties contains mappings to tell the EntryEditor to add a specific function to this field,
@@ -25,6 +27,7 @@ public interface Field {
     String getName();
 
     boolean isStandardField();
+
 
     default boolean isDeprecated() {
         return false;

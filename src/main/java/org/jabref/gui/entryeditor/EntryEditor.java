@@ -2,26 +2,13 @@ package org.jabref.gui.entryeditor;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
@@ -36,6 +23,7 @@ import org.jabref.gui.entryeditor.citationrelationtab.CitationRelationsTab;
 import org.jabref.gui.entryeditor.fileannotationtab.FileAnnotationTab;
 import org.jabref.gui.entryeditor.fileannotationtab.FulltextSearchResultsTab;
 import org.jabref.gui.externalfiles.ExternalFilesEntryLinker;
+import org.jabref.gui.fieldeditors.EditorTextField;
 import org.jabref.gui.help.HelpAction;
 import org.jabref.gui.importer.GrobidOptInDialogHelper;
 import org.jabref.gui.keyboard.KeyBinding;
@@ -92,6 +80,8 @@ public class EntryEditor extends BorderPane {
     private final ExternalFilesEntryLinker fileLinker;
     private final DirectoryMonitorManager directoryMonitorManager;
     private final UndoAction undoAction;
+
+    private FieldManager fieldManager;
     private final RedoAction redoAction;
 
     private Subscription typeSubscription;
@@ -142,6 +132,7 @@ public class EntryEditor extends BorderPane {
         this.previewTabs = this.allPossibleTabs.stream().filter(OffersPreview.class::isInstance).map(OffersPreview.class::cast).toList();
 
         setupDragAndDrop(libraryTab);
+        EditorTextField.entryContext(tabbed);
 
         EasyBind.subscribe(tabbed.getSelectionModel().selectedItemProperty(), tab -> {
             EntryEditorTab activeTab = (EntryEditorTab) tab;
@@ -194,30 +185,7 @@ public class EntryEditor extends BorderPane {
         });
     }
 
-//    private void setTextFieldTraversable() {
-//        for (Node node : tabbed.getChildrenUnmodifiable()) {
-//            if (node instanceof TextField) {
-//                node.setFocusTraversable(false);
-//            }
-//        }
-//    }
-//
-//    public void setTraversal1() {
-//        if (getParent() != null) {
-//            Parent parent = getParent();
-//            for (Node child : parent.getChildrenUnmodifiable()) {
-//                child.setFocusTraversable(false);
-//            }
-//        }
-//    }
-//
-//    public void setTraversal(){
-//        Parent parent = libraryTab.getMainTable();
-//        for (Node child : parent.getChildrenUnmodifiable()) {
-//            child.setFocusTraversable(false);
-//        }
 
-//    }
 
     /**
      * Set up key bindings specific for the entry editor.
@@ -226,11 +194,11 @@ public class EntryEditor extends BorderPane {
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             Optional<KeyBinding> keyBinding = keyBindingRepository.mapToKeyBinding(event);
 
-            String keyText = event.getText();
-            if ("\t".equals(keyText)){
-                tabbed.getSelectionModel().selectNext();
-                event.consume();
-          }
+////            String keyText = event.getText();
+////            if ("\t".equals(keyText)){
+//                tabbed.getSelectionModel().selectNext();
+//                event.consume();
+////          }
 
             if (keyBinding.isPresent()) {
                 switch (keyBinding.get()) {
@@ -272,31 +240,89 @@ public class EntryEditor extends BorderPane {
         });
     }
 
-//    public boolean checkLastTextField() {
-//        // Get the currently selected tab
-//        FieldsEditorTab currentTab = (FieldsEditorTab) tabbed.getSelectionModel().getSelectedItem();
-//
-//        // Get the list of fields in the current tab (assuming these are TextFields or TextAreas)
-//        Collection<Field> shownFields = currentTab.getShownFields();
-//
-//        // Find the currently focused field
-//        Node focusedNode = getScene().getFocusOwner();
-//
-//        // Iterate over the shown fields and check if the focused node is the last one
-//        if (focusedNode != null) {
-//            Field lastField = null;
-//            for (Field field : shownFields) {
-//                lastField = field; // Track the last field in the iteration
-//            }
-//
-//            // Check if the focusedNode is the last visible field
-//            if (lastField != null && lastField.equals(focusedNode)) {
-//                return true; // The focused node is the last field
-//            }
-//        }
-//
-//        return false; // The focused node is not the last field or no field is focused
-//    }
+
+    public static boolean checkLastTextField(TabPane tabs, TextField textField) {
+//         Get the currently selected tab
+        FieldsEditorTab currentTab = (FieldsEditorTab) tabs.getSelectionModel().getSelectedItem();
+
+        // Get the list of fields in the current tab (assuming these are TextFields or TextAreas)
+        Collection<Field> shownFields = currentTab.getShownFields();
+
+//        System.out.println(textField.getScene());
+
+//        System.out.println(field1);
+
+
+            // Iterate over the shown fields to find the last field
+            Field lastField = null;
+            for (Field field : shownFields) {
+                lastField = field; // Track the last field in the iteration
+            }
+//        System.out.println("last field name " + lastField.getDisplayName());
+//        System.out.println("textField id " + textField.getId());
+//        System.out.println("textField obj name " + textField);
+////
+//        EditorTextField@2e8bb9c4[styleClass=text-input text-field]
+//        EditorTextField@bdba6c2[styleClass=text-input text-field]
+//        EditorTextField@57f827b4[styleClass=text-input text-field]
+
+
+
+
+//            System.out.println(textField.getParent());
+//            System.out.println(lastField.);
+
+            // If lastField is found, check if the focusedNode is the last one
+            if (textField != null && lastField != null){
+                if (textField.getId() == null){
+                    return false;
+                }
+            return lastField.getDisplayName().toLowerCase().equals(textField.getId().toLowerCase());
+            }
+                return false;
+            }
+
+
+    public static boolean isTextFieldEqualToSpecified(TextField textFieldToCheck) {
+        TextField editorTextField1 = new EditorTextField(); // Reference to EditorTextField@2e8bb9c4
+        TextField editorTextField2 = new EditorTextField(); // Reference to EditorTextField@bdba6c2
+        TextField editorTextField3 = new EditorTextField(); // Reference to EditorTextField@57f827b4
+//        textFieldToCheck.equals((TextField) EditorTextField@252f6d62)
+        // Check against the specific references
+        return textFieldToCheck == editorTextField1 ||
+                textFieldToCheck == editorTextField2 ||
+                textFieldToCheck == editorTextField3;
+    }
+
+
+    private static Node getNextFocusable(TextField currentTextField, Collection<Field> shownFields) {
+        // Create a list of focusable nodes from the shown fields
+        List<Node> focusableFields = new ArrayList<>();
+
+        for (Field field : shownFields) {
+            // Assuming Field can be cast to Node or has a method to retrieve Node
+            if (field instanceof Node) {
+                focusableFields.add((Node) field);
+            }
+        }
+
+        int currentIndex = focusableFields.indexOf(currentTextField);
+
+        // Return the next focusable node, wrapping around if needed
+        if (currentIndex != -1) {
+            int nextIndex = (currentIndex + 1) % focusableFields.size();
+            return focusableFields.get(nextIndex);
+        }
+
+        return null; // Not found
+    }
+
+
+
+    public Field getCurrentField(){
+        return currentField;
+    }
+
 
     @FXML
     public void close() {
@@ -511,6 +537,8 @@ public class EntryEditor extends BorderPane {
         new FetchAndMergeEntry(libraryTab.getBibDatabaseContext(), taskExecutor, preferences, dialogService, undoManager).fetchAndMerge(currentlyEditedEntry, fetcher);
     }
 
+    private Field currentField;  // Change to instance variable
+
     public void setFocusToField(Field field) {
         UiTaskExecutor.runInJavaFXThread(() -> {
             for (Tab tab : tabbed.getTabs()) {
@@ -518,6 +546,7 @@ public class EntryEditor extends BorderPane {
                         && fieldsEditorTab.getShownFields().contains(field)) {
                     tabbed.getSelectionModel().select(tab);
                     fieldsEditorTab.requestFocus(field);
+                    System.out.println("CURRENT FIELD " + field);
                 }
             }
         });

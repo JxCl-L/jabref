@@ -14,6 +14,7 @@ public record BibField(Field field, FieldPriority priority) implements Comparabl
         }
         BibField other = (BibField) o;
         return field.getName().equalsIgnoreCase(other.field.getName());
+
     }
 
     @Override
